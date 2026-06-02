@@ -1,13 +1,17 @@
-# Learning Github Actions
+# Testing path filters
 name: My First Workflow
 
 on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/**'   
   pull_request:
     branches:
       - main 
+    paths:
+      - '.github/workflows/**'
 
 jobs:
   say-hello:
