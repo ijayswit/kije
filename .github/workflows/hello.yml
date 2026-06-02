@@ -21,3 +21,7 @@ jobs:
           echo "Repository: ${{ github.repository }}"
           echo "Branch: ${{ github.ref_name }}"
           echo "Triggered by: ${{ github.actor }}"
+
+      - name: Show date info
+        run: date       
+
