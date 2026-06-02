@@ -1,9 +1,13 @@
+# Learning Github Actions
 name: My First Workflow
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main 
 
 jobs:
   say-hello:
