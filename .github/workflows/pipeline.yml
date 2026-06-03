@@ -57,4 +57,4 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - name: Deploy application
-        run: echo "Deploying application to production"
+        run: echo "Deploying application to production.."
