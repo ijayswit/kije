@@ -18,3 +18,5 @@ function divide(a, b) {
 }
 
 module.exports = { add, subtract, multiply, divide }
+
+const unused = 'this should fail'
