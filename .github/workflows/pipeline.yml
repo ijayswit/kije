@@ -50,4 +50,11 @@ jobs:
 
       - name: Run Build
         run: echo "Building the application..."
-    
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+    steps:
+      - name: Deploy application
+        run: echo "Deploying application to production"
