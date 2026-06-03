@@ -24,8 +24,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Run lint
-        run: echo "Running linter..."
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npx eslint src/
 
   test:
     runs-on: ubuntu-latest
