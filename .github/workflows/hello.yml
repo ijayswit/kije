@@ -25,8 +25,8 @@ on:
         type: string
         required: true
 
-  schedule:
-    - cron: '0 8 * * *'
+  # schedule:
+  #   - cron: '0 8 * * *'
 
 
 
@@ -54,6 +54,6 @@ jobs:
       - name: Custom greeting
         run: echo "${{ github.event.inputs.greeting }}, ${{ github.event.inputs.your_name }}!"
 
-      - name: Scheduled message
-        if: github.event_name == 'schedule'
-        run: echo "This is a scheduled run!"
+      # - name: Scheduled message
+      #   if: github.event_name == 'schedule'
+      #   run: echo "This is a scheduled run!"
