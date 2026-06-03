@@ -13,6 +13,21 @@ on:
     paths:
       - '.github/workflows/**'
 
+  workflow_dispatch:
+    inputs:
+      greeting:
+        description: "What greeting should we use?"
+        type: string
+        required: true
+        default: "Hello"
+
+      your_name: 
+        description: "What is your name?"
+        type: string
+        required: true
+
+
+
 jobs:
   say-hello:
     runs-on: ubuntu-latest
@@ -33,3 +48,5 @@ jobs:
       - name: Show date info
         run: date       
 
+      - name: Custom greeting
+        run: echo "${{ github.event.inputs.greeting }}, ${{ github.event.inputs.your_name }}!"
