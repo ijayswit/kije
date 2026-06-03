@@ -29,8 +29,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Setup Node.JS
+        uses: actions/setup-node@v4
+        id: setup-node
+        with:
+          node-version: '20'
+
+      - name: Print Node version
+        run: echo "Node version is ${{ steps.setup-node.outputs.node-version }}"   
+
       - name: Run tests
         run: echo "Running tests..."
+
 
   security-scan:
     runs-on: ubuntu-latest
