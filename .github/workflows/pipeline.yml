@@ -1,0 +1,42 @@
+name: My Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/pipeline.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/pipeline.yml'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run lint
+        run: echo "Running linter..."
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run tests
+        run: echo "Running tests..."
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run security scan
+        run: echo "Running security scan..."
