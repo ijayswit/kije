@@ -68,7 +68,14 @@ jobs:
         run: npm install
 
       - name: Print Node version
-        run: echo "Node version is ${{ steps.setup-node.outputs.node-version }}"  
+        run: echo "Node version is ${{ steps.setup-node.outputs.node-version }}" 
+
+      - name: Use secret
+        env:
+          My_SECRET: ${{ secrets.MY_FIRST_SECRET }} 
+        run: |
+          echo "The secret is: $My_SECRET"
+          echo "Secret length: ${#MY_SECRET}"
 
       - name: Run tests
         run: npm test
