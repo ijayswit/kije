@@ -1,3 +1,4 @@
+# Testing cache on second run
 name: My Pipeline
 
 on:
@@ -5,11 +6,15 @@ on:
     branches:
       - main
     paths:
+      - 'src/**'
+      - 'tests/**'    
       - '.github/workflows/pipeline.yml'
   pull_request:
     branches:
       - main
     paths:
+      - 'src/**'
+      - 'tests/**'
       - '.github/workflows/pipeline.yml'
   workflow_dispatch:
 
@@ -20,8 +25,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Run lint
-        run: echo "Running linter..."
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Run ESLint
+        run: npx eslint src/
 
   test:
     runs-on: ubuntu-latest
@@ -30,16 +51,34 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Node.JS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         id: setup-node
         with:
           node-version: '20'
 
+      - name: Cache node modules
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
       - name: Print Node version
-        run: echo "Node version is ${{ steps.setup-node.outputs.node-version }}"   
+        run: echo "Node version is ${{ steps.setup-node.outputs.node-version }}" 
+
+      - name: Use secret
+        env:
+          My_SECRET: ${{ secrets.MY_FIRST_SECRET }} 
+        run: |
+          echo "The secret is: $My_SECRET"
+          echo "Secret length: ${#My_SECRET}"
 
       - name: Run tests
-        run: echo "Running tests..."
+        run: npm test
 
 
   security-scan:
@@ -48,8 +87,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Run security scan
-        run: echo "Running security scan..."
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Run security audit
+        run: npm audit --audit-level=high
 
   build:
     runs-on: ubuntu-latest
@@ -58,8 +113,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Run Build
-        run: echo "Building the application..."
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Verify project structure
+        run: |
+          echo "Verifying project structure..."
+          test -f src/math.js && echo "✅ src/math.js exists"
+          test -f tests/math.test.js && echo "✅ tests/math.test.js exists"
+          test -f package.json && echo "✅ package.json exists"
+          echo "Build verification complete!"
+
 
   deploy:
     runs-on: ubuntu-latest
