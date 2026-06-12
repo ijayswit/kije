@@ -87,8 +87,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Run security scan
-        run: echo "Running security scan..."
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Run security audit
+        run: npm audit --audit-level=high
 
   build:
     runs-on: ubuntu-latest
@@ -97,8 +113,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Run Build
-        run: echo "Building the application..."
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Verify project structure
+        run: |
+          echo "Verifying project structure..."
+          test -f src/math.js && echo "✅ src/math.js exists"
+          test -f tests/math.test.js && echo "✅ tests/math.test.js exists"
+          test -f package.json && echo "✅ package.json exists"
+          echo "Build verification complete!"
+
 
   deploy:
     runs-on: ubuntu-latest
